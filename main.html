@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<TITLE>GORDON RAMSAY FAN CLUB</TITLE>
+</head>
+
+<body>
+	
+	<h1>GORDON RAMSAY FAN CLUB </h1><p>
+
+
+	<img src="http://cdn.realscreen.com/wp/wp-content/uploads/2017/08/Gordon-Ramsay.jpg?60980e"><p>
+
+	<a target="_blank" href="https://www.google.com.au/search?q=gordon+ramsay&btnI=1">Feeling lucky?</a> <br><br>
+	
+	<form>
+		<input id="ReviewInput"/><br>
+		<textarea id="ReviewTextArea" placeholder="Ramsay is a God"></textarea>
+		<button type="button" id="ReviewSaveButton">Save Review</button>	
+	</form>
+
+
+	<div id="Reviews">
+		<div class="review">
+			<h2>I LOVE THIS MAN</h2>
+			<p id="ReviewFeedback">I love his pork belly recipe!</p>
+		</div>
+	</div>
+
+	<script>
+		function addReview() {
+			console.log("start of addReview function");
+			console.log(ReviewTextArea.value);
+			console.log(ReviewInput.value);
+			
+			var beforeHTML = Reviews.innerHTML;
+			var newReview = createReviewDiv();
+			var finalHTML = beforeHTML + newReview;
+
+	
+			Reviews.innerHTML = finalHTML;
+		
+		
+
+		}
+		
+		function createReviewDiv() {
+			var title = ReviewInput.value;
+			var feedback = ReviewTextArea.value;
+			var s = `<div class="review">
+				<h2>${title}</h2>
+				<p>${feedback}</p>
+		</div>`;
+		return s;
+		}
+
+		ReviewSaveButton.onclick = addReview;
+		
+	</script>
+</body>
+
+</html>
