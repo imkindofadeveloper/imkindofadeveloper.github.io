@@ -1,0 +1,315 @@
+Header
+
+
+<div id="sticky_head">
+    <nav class="page-tabs action-bar" >
+      
+      {% if portal.tabs.size > 0 %}
+      
+      <a id="menu-icon" class="ficon-reorder-0 show-in-mobile menu-trigger"></a>
+      <a href="/support/home" class="help-center-tab show-in-mobile">{% translate portal.home %}</a>
+      <div class="action-bar-wrapper">  
+
+
+<a href="/home"><img src="https://www.fyrtarn.com/wp-content/uploads/2018/05/Fyrtarn-Logo-190x60.png" height="30" width="95" /></a>
+<!--
+      <div class="nav-link" id="page-tabs">
+          {% for tab in portal.tabs %}
+            {% if tab.url %}
+              <a class="{% if tab.tab_type == portal.current_tab %}active{% endif %}" href="{{tab.url}}">
+                  {{ tab.label }} 
+              </a>
+            {% endif %}
+          {% endfor %}
+      </div>
+-->
+        <div id="new-ticket-button">
+          {% if portal.has_user_signed_in == true %}
+              
+
+            {% if portal.user.profile_url != false %}   
+              <img class="profile-picture" src="{{ portal.user.profile_url }}" onerror="imgerror(this)" />
+            {% else %}
+         	  <img class="profile-picture" src="{{ portal.asset_host_url }}/assets/fillers/profile_blank_thumb.gif" />
+	        {% endif %}
+          	<div class="dropdown" id="action-bar-toggle">
+                <a class="dropdown-toggle profile-name" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">{{ current_user.name }}<b class="caret"></b></a>
+                <ul class="dropdown-menu profile-popup" role="menu" aria-labelledby="dLabel">
+                    <a href="{{ portal.profile_url }}">{% translate portal.edit_profile %}</a>
+                  <a href="{{ portal.logout_url }}">{% translate portal.sign_out %}</a>
+                </ul>
+            </div>
+          
+            <!-- <a href="{{ portal.new_ticket_url }}" class="btn btn-orange">{% translate portal.new_ticket %}</a> -->
+              
+              <!-- {%if portal.both_portal %}
+                <a id="ask-bot" href="" class="btn btn-orange">{{ portal | get_bot_button }}</a>
+               {% endif %}
+             -->
+            
+            {% else %}
+              <a href="{{ portal.login_url }}" class="portal-signin uppercase">{% translate portal.signin %}</a>
+            {% if portal.can_signup_feature %}
+              <a href="{{ portal['signup_url'] }}" class="btn btn-red uppercase">{% translate portal.signup %}</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </nav>
+</div>
+
+
+Footer
+<footer class="ft-footer">
+  
+<html>
+	<footer style="background-color:#F7F7F7;">
+	<hr><br>
+
+	<h2>Can't find what you're looking for?</h2>
+	<div class="ft-new-ticket-button">
+		{% if portal.can_submit_ticket_without_login %}
+			 <a href="{{ portal.new_ticket_url }}" class="ft-new-ticket-button" >Submit New Request</a>
+		{% endif %}	
+	</div>
+
+  
+<br>
+  
+	<div class="Links">
+		{{ portal | link_to_privacy_policy_new }}
+		{{ portal | link_to_cookie_law_new}}
+      
+	</div>
+  
+</footer>
+
+Layout
+<div class="jPanelMenu-panel">
+	<div class="tab-panel hide" id="menu">
+		{% for tab in portal.tabs %}
+		    {% if tab.url %}
+		      <a class="{% if tab.tab_type == portal.current_tab %}active{% endif %}" href="{{tab.url}}">
+		          {{ tab.label }} 
+		      </a>
+		    {% endif %}
+		{% endfor %}
+		{% if portal.can_submit_ticket_without_login %}
+			 <a href="{{ portal.new_ticket_url }}">{% translate portal.new_ticket %}</a>
+		{% endif %}
+		{% if portal.has_user_signed_in == true %}
+			 <a href="{{ portal.profile_url }}">{% translate portal.edit_profile %}</a>
+	         <a href="{{ portal.logout_url }}">{% translate portal.sign_out %}</a>
+		{% else %}
+			<a href="{{ portal.login_url }}">{% translate portal.login %}</a>
+		{% endif%}
+	</div>
+
+	<div class="layout-panel">
+	{{ header }}
+	<div class="page page-layout" id="new-layout">
+		<!-- Notification Messages  -->
+		{{ page_message }}
+		
+		 <!-- Search and page links for the page -->
+		  {% if portal.search_allowed? %}
+		  <section class="help-center rounded-6 ft-hero-img">
+   		    	<div class="hc-search">
+		      		<div class="hc-search-c ">
+		        {% snippet search_form_new %}
+                </div>
+		      </div>
+		  </section>
+		  {% endif %}
+
+		<div class="c-wrapper">		
+			{{ content_for_layout }}
+		</div>
+		{{ footer }}
+	</div>
+	</div>
+</div>
+
+Portal Home
+`{% if portal.has_forums %}
+<div class="announcement-container">
+  <div class="hide-in-mobile">
+  <span class="icon-announcement pull-left"></span>
+  <h3 class="pull-left">{% translate portal.announcements %}</h3>
+  <a class="pull-left hide-in-mobile" href = {{portal.show_announcements_url}}>{% translate portal.view_all %}</a>
+  </div>
+<div class="clearfix"></div>
+  <div class="show-in-mobile an-mob-header">
+    <h3>{% translate portal.announcements %}</h3>
+    <div class="https://i.imgur.com/uuMC4PX.png"></div>
+  </div>
+<div class="an-content">
+    {{ portal | filter_for_announcements_new }}
+</div>
+</div>
+{%endif%}
+
+
+<div class="quick-link">
+  <div class="quick-link-wrapper">
+    <ul class="quick-link-lister">
+
+
+      <li id="support_tickets">
+        <div class="ft-action-section">
+          <a href={{portal.ticket.portal_url}}>
+            <img src="https://i.imgur.com/Nw5w5xM.png" alt="Knowledge Base">
+            <div class="ft-action-container">
+          <h3>{% translate portal.your_tickets %}</h3>
+          <h5> {% translate portal.your_tickets_desc %} </h5><br><br>
+             {% if portal.has_user_signed_in == true %}
+             <div class="login-popup w400 hide" id="recent-tickets-list">
+                 <table>
+                 {% for ticket in portal.portal_user_recent_tickets%}
+                  <tr>
+                    <td>
+                      <a href={{ticket.portal_url}}>{{ticket.subject | h}}<span class='ticket_id'> #{{ticket.id}}</span></a>
+                      <div>{{ ticket | ticket_date_format }}</div>
+                    </td>
+                    <td><span>{{ticket.status}}</span></td>
+                  </tr>
+                  {%endfor%}
+                 </table>
+               </div>
+             {% else%}
+              <div class="login-popup">
+                  <a href = {{portal.login_url}}>{% translate portal.login %}</a> 
+                  {% if portal.can_signup_feature %}
+                    {% translate portal.or %} <a href = {{portal['signup_url']}}>{% translate portal.signup %}</a> 
+                  {% endif %}
+                  {% translate portal.to_view_your_requests %}
+              </div>
+             {% endif %}
+          	</a>
+      </li>
+
+
+      <li id="pending_approvals">
+          <div class="ft-action-section">
+          <a href={{portal.pending_approvals_url}}>
+            <img src="https://i.imgur.com/mKBnl32.png" alt="Knowledge Base">
+            <div class="ft-action-container">
+        	
+            {% if portal.pending_approvals_count > 0 %}
+              <span class="pending_approval_count">{{portal.pending_approvals_count}}</span><br>
+            {% endif %}
+          
+          <h3>{% translate portal.pending_approvals %}</h3>
+          <h5>{% translate portal.pending_approvals_desc %}</h5><br>
+            {% if portal.has_user_signed_in == true and portal.pending_approvals_count > 0 %}
+            <div class="login-popup w400" id="recent-approval-list">
+              <table>
+                {% for approval in portal.portal_user_recent_approvals%}
+                <tr>
+                  <td>
+                    {% if !approval.delegatee_id.nil? && approval.delegatee_id == portal.user.id %}
+                      <a href={{approval.delegatee_url}}>{{ approval.approvable.subject | h }}<span class='ticket_id'> #{{approval.approvable.id}}</span></a>
+                    {% else %}
+                      <a href={{approval.portal_url }}>{{ approval.approvable.subject | h }}<span class='ticket_id'> #{{approval.approvable.id}}</span></a>
+                    {% endif %}
+                    <div>{% translate itil.approvals.approval_request_sent_on %} {{ approval.created_on | formated_date }}</div>
+                  </td>
+                </tr>
+                {%endfor%}
+              </table>
+              
+            </div>
+            {% endif %}
+        </a>
+      </li>
+      
+      <!--
+      <li id="portal_report_incident">
+        <a href={{portal.new_ticket_url}} class="quick-link-widgets">
+           <span class="circle">
+            <span class="icon-report-incident"></span>
+          </span>
+           <h3>{% translate portal.report_incident %} </h3>
+          <h5> {% translate portal.report_incident_desc %} </h5>
+        </a>
+      </li>
+-->
+
+      <li>
+        <div class="ft-action-section">
+          <a href="https://fyrtarn.freshservice.com/support/solutions/folders/11000042749">
+            <img src="https://i.imgur.com/IaF5j7L.png" alt="Knowledge Base">
+            <div class="ft-action-container">
+              <h3>Time to Learn</h3>
+              <h5>Get started with these instructional guides on how to use your new device</h5><br>          
+            </div>
+          </a>
+        </div>
+        
+
+
+      </li>
+
+      <!--{% if portal.support_service_catalog_feature?%}
+      <li id="portal_service_catalog">
+        <a href={{portal.service_catalog_items_url}} class="quick-link-widgets">
+          <span class="circle">
+            <span class="icon-request-service"></span>
+          </span>
+          <h3> {% translate portal.request_service %}</h3>
+          <h5> {% translate portal.request_service_desc %}</h5>
+        </a>
+      </li>
+      {%endif%} -->
+
+      <li>
+        <div class="ft-action-section">
+          <a href={{portal.service_catalog_items_url}}>
+            <img src="https://i.imgur.com/cgocDea.png" alt="Knowledge Base">
+            <div class="ft-action-container">
+              <h3>{% translate portal.request_service  %} </h3>
+              <h5> {% translate portal.request_service_desc %} </h5> <br>         
+            </div>
+          </a>
+        </div>
+
+      
+      <!---<li id="support_solutions">
+        <a href={{portal.support_solutions_url}} class="quick-link-widgets">
+          <span class="circle">
+            <span class="icon-browse-solution"></span>
+          </span>
+          <h3> {% translate portal.browse_solutions %} </h3>
+          <h5> {% translate portal.browse_solutions_desc %} </h5>
+        </a>
+      </li>
+      --->
+            <li>
+        <div class="ft-action-section">
+          <a href={{portal.support_solutions_url}}>
+            <img src="https://i.imgur.com/ME1UOt8.png" alt="Knowledge Base">
+            <div class="ft-action-container">
+              <h3>{% translate portal.browse_solutions %} </h3>
+              <h5> {% translate portal.browse_solutions_desc %} </h5>          
+            </div>
+          </a>
+        </div>
+
+
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="popular-items">
+  {% if portal.has_user_signed_in == true %}
+    {{ portal | filter_for_popular_services }}
+  {% endif %}
+    {{ portal | filter_for_articles}}
+</div>
+
+{% if portal.has_user_signed_in == true %}
+  {% snippet new_chat_form %}
+{% endif %}
+
